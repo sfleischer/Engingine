@@ -12,7 +12,7 @@ public class Engine {
 	
 	public Engine(){
 		bodies.add(new Circle(1, 50, 50, 10, 0, 10, Color.red));
-		
+		bodies.add(new Circle(1, 200, 200, -50, -50, 10, Color.blue));
 	}
 	
 	public void draw(Graphics2D g2){
