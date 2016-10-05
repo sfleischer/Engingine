@@ -1,6 +1,7 @@
 package game;
 
 import java.awt.Color;
+import java.awt.geom.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.*;
@@ -16,7 +17,7 @@ public class StubPanel extends JPanel implements ActionListener{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static final double dt = .02;
+	private static final double dt = .04;
 	
 	Engine engine;
 	Timer timer;
@@ -31,6 +32,8 @@ public class StubPanel extends JPanel implements ActionListener{
 	public void paintComponent(Graphics g){
 		Graphics2D g2 = (Graphics2D) g;
 		g2.setColor(Color.black);
+		g2.fill(new Rectangle2D.Double(0,0,getWidth(), getHeight()));
+		engine.updateSize(getWidth(), getHeight());
 		engine.move(dt);
 		engine.draw(g2);
 	}

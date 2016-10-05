@@ -6,18 +6,19 @@ public class Resolution {
 
 	public static void resolveCollision (Body A, Body B) {
 		
-		Vector rv = A.velocity.subtract(B.velocity);
+		Vector rv = B.velocity.subtract(A.velocity);
 		//Vector AtoB = B.position.subtract(B.position);
-		Vector BtoA = A.position.subtract(A.position);
+		Vector BtoA = A.position.subtract(B.position);
 		
-		Vector n = A.normalToSurface(BtoA);
+		Vector n = A.normalToSurface(BtoA).unit();
 		
 		//find the relative velocity along the normal
 		double velAlongNormal = rv.dot(n);
 		
 		//if the objects are moving apart then don't resolve
-		if(velAlongNormal > 0)
+		if(velAlongNormal > 0){
 			return;
+		}
 		
 		//get the lowest restitution between the two objects
 		double e = Math.min(A.getRestitution(), B.getRestitution());
@@ -27,6 +28,6 @@ public class Resolution {
 		
 		Vector impulse = n.scalar(j);
 		A.velocity = A.velocity.subtract(impulse.scalar(A.inv_mass));
-		B.velocity = B.velocity.subtract(impulse.scalar(B.inv_mass));
+		B.velocity = B.velocity.add(impulse.scalar(B.inv_mass));
 	}
 }

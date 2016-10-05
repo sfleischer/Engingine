@@ -24,13 +24,34 @@ public class Circle extends Body {
 
 	@Override
 	public void draw(Graphics2D g2) {
+		//g2.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), 100));
+		//g2.fill(new Ellipse2D.Double(position.x - radius, position.y - radius, radius*2, radius*2));
 		g2.setColor(color);
-		g2.draw(new Ellipse2D.Double(position.x - radius, position.x, radius*2, radius*2));
+		g2.fill(new Ellipse2D.Double(position.x - radius, position.y - radius, radius*2, radius*2));
 	}
 
 	@Override
 	public Vector normalToSurface(Vector direction) {
 		return new Vector(-direction.x, -direction.y);
+	}
+	
+	@Override
+	public void checkCollisionWithWall(int xwall, int ywall){
+		if(position.x + radius > xwall && velocity.x > 0 || position.x - radius < 0 && velocity.x < 0){
+			velocity.x = -velocity.x;
+		}
+			
+		if(position.y + radius > ywall && velocity.y > 0){
+			if(velocity.y < 5){
+				velocity.y = 0;
+				force = new Vector(0,0);
+			}
+			velocity.y = -velocity.y;
+			position.y = ywall - radius;
+		}
+		else if (position.y - radius < 0 && velocity.y < 0){
+			velocity.y = -velocity.y;
+		}
 	}
 	
 	//getter and setter methods

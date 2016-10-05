@@ -61,13 +61,19 @@ public class VectorTest {
 	}
 	
 	@Test
+	public void Q2AngleTest() {
+		Vector v = new Vector(-1,1);
+		assertEquals(v.angle(), 3*Math.PI/4, EPSILON);
+	}
+	
+	@Test
 	public void zeroAngleTest() {
 		Vector v = new Vector(20,0);
 		assertEquals(v.angle(), 0, EPSILON);
 	}
 	
 	@Test
-	public void negativeAngleTest() {
+	public void Q3AngleTest() {
 		Vector v = new Vector(-3,-3);
 		assertEquals(v.angle(), -1*3*Math.PI/4, EPSILON);
 	}

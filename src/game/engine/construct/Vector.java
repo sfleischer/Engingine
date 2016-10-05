@@ -70,10 +70,21 @@ public class Vector {
 	}
 	
 	/**
-	 * 
-	 * @return A vector normal to this one (there are two possible vectors)
+	 * A normal vector can be normalIn or normalOut
+	 * If the cross product of the original vector does into the page
+	 * then its a normalIn normal vector.
+	 * @return A vector normal to this one.
 	 */
-	public Vector normal(){
+	public Vector normalIn(){
+		return new Vector(y, -x);
+	}
+	
+	/**
+	 * The cross product of the original vector and this normal one
+	 * 
+	 * @return A vector normal to this one
+	 */
+	public Vector normalOut(){
 		return new Vector(-y, x);
 	}
 	
@@ -84,6 +95,14 @@ public class Vector {
 	 */
 	public Vector scalar(double s){
 		return new Vector(x*s, y*s);
+	}
+	
+	/**
+	 * Creates a unit Vector version of the vector
+	 * @return A unit vector
+	 */
+	public Vector unit(){
+		return new Vector(x/magnitude(), y/magnitude());
 	}
 	
 	/**

@@ -1,6 +1,7 @@
 package game.engine.construct;
 
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.Color;
 
 /**
@@ -16,18 +17,33 @@ public abstract class Body {
 	public double inv_mass;     //reciprocal of the mass
 	public Vector position;     //position vector
 	public Vector velocity;     //velocity vector
-	public Vector omega;        //angular velocity vector
+	public double alpha;        //angular velocity vector
+	public double omega;        //angular velocity vector
 	protected Vector force;       //total force on the object
 	protected Color color;        //the color of the body
 	protected double restitution; //the coefficient of restitution of the object
+	protected Rectangle aabb;
 	
 	public Body(double m, double x, double y, double vx, double vy, Color c){
 		mass = m;
 		inv_mass = 1/m;
 		position = new Vector(x, y);
 		velocity = new Vector(vx, vy);
-		omega    = new Vector(0, 0);
-		force = new Vector(0, 0);
+		alpha    = 0;
+		omega    = 0;
+		force = new Vector(0, 50);
+		color = c;
+		restitution = 1;
+	}
+	
+	public Body(double m, Vector pos, Vector vel, Color c){
+		mass = m;
+		inv_mass = 1/m;
+		position = pos;
+		velocity = vel;
+		alpha    = 0;
+		omega    = 0;
+		force = new Vector(0, 50);
 		color = c;
 		restitution = 1;
 	}
@@ -37,8 +53,9 @@ public abstract class Body {
 		inv_mass = 1/m;
 		position = new Vector(x, y);
 		velocity = new Vector(vx, vy);
-		omega    = new Vector(0, 0);
-		force = new Vector(0, 0);
+		alpha    = 0;
+		omega    = 0;
+		force = new Vector(0, 10000);
 		color = c;
 		restitution = rest;
 	}
@@ -62,7 +79,7 @@ public abstract class Body {
 		velocity.x = velocity.x + force.x * dt;
 		velocity.y = velocity.y + force.y * dt;
 		position.x = position.x + velocity.x * dt;
-		position.y = position.y + position.y * dt;
+		position.y = position.y + velocity.y * dt;
 	}
 	
 	/**
@@ -79,6 +96,8 @@ public abstract class Body {
 	 */
 	public abstract Vector normalToSurface (Vector direction);
 	
+	public abstract void checkCollisionWithWall(int xwall, int ywall);
+	
 	//getter and setter methods
 	
 	/**
@@ -86,6 +105,10 @@ public abstract class Body {
 	 */
 	public double getRestitution(){
 		return restitution;
+	}
+	
+	public Rectangle getAABB(){
+		return aabb;
 	}
 	
 	/**
