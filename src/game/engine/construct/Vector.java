@@ -107,6 +107,14 @@ public class Vector {
 	
 	/**
 	 * 
+	 * @return A vector going in the reversed direction with same magnitude
+	 */
+	public Vector reverse(){
+		return new Vector(-x, -y);
+	}
+	
+	/**
+	 * 
 	 * @param v The vector one wishes to compare with
 	 * @return True if the vectors are equal in magnitude and direction and false otherwise
 	 */

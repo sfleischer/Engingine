@@ -2,6 +2,8 @@ package game.engine.construct;
 
 
 import java.awt.Graphics2D;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.awt.geom.Rectangle2D;
 import java.awt.Color;
 
@@ -13,6 +15,8 @@ public class Box extends Body{
 	private Vector corner4;
 	private double width;
 	private double height;
+	private ArrayList<Vector> corners; //stores the corners (vector relative to the center)
+	private ArrayList<Vector> points;  //stores the points (vector relative to the origin)
 	
 	/*
 	 * Corners of the box are arranged like the following
@@ -26,6 +30,7 @@ public class Box extends Body{
 	 *   corner4 *------------* corner3
 	 *   
 	 *   note that the box can rotate and the corners are not tied to their orientation
+	 *   the ArrayList corners is a list that contains all of these corners
 	 */
 	
 	/**
@@ -38,15 +43,37 @@ public class Box extends Body{
 	 * @param h The height of the Box
 	 * @param w The width of the Box
 	 */
-	public Box(double m, double x, double y, double vx, double vy, double h, double w, Color c){
+	public Box(double m, double x, double y, double vx, double vy, double w, double h, Color c){
 		super(m, x, y, vx, vy, c);
 		width = w;
 		height = h;
-		corner1 = position.subtract(new Vector(x - w/2, y - h/2));
-		corner2 = position.subtract(new Vector(x + w/2, y - h/2));
-		corner3 = position.subtract(new Vector(x + w/2, y + h/2));
-		corner4 = position.subtract(new Vector(x - w/2, y + h/2));
+		
+		points  = new ArrayList<Vector>();
+		corners = new ArrayList<Vector>();
+		
+		updatePoints();
 	}
+	
+	public void updatePoints(){
+		points.clear();
+		corners.clear();
+		
+		points.add(new Vector(position.x - width/2, position.y - height/2));
+		points.add(new Vector(position.x + width/2, position.y - height/2));
+		points.add(new Vector(position.x + width/2, position.y + height/2));
+		points.add(new Vector(position.x - width/2, position.y + height/2));
+		
+		corner1 = position.subtract(points.get(0));
+		corner2 = position.subtract(points.get(1));
+		corner3 = position.subtract(points.get(2));
+		corner4 = position.subtract(points.get(3));
+		
+		corners.add(corner1);
+		corners.add(corner2);
+		corners.add(corner3);
+		corners.add(corner4);
+	}
+	
 	/**
 	 * All bodies must be able to draw
 	 * @param g2 Graphics2D object from the Scene JPanel
@@ -59,38 +86,91 @@ public class Box extends Body{
 	
 	/**
 	 * All bodies must be able to return the normal to the surface that a direction 
-	 * vector is pointing to.
+	 * vector is pointing to. Note: This method needs changing.
 	 * @param direction The vector that is pointing to a specific surface
 	 * @return The vector that is normal to that surface
 	 */
 	public Vector normalToSurface (Vector direction){
 		Vector reverse = new Vector(-direction.x, -direction.y);
 		double angle = reverse.angle();
-		if(corner1.angle() < angle && angle <= corner2.angle())
-			return corner2.subtract(corner1).normalOut();
-		else if(corner2.angle() < angle && angle <= corner3.angle())
-			return corner3.subtract(corner2).normalOut();
-		else if(corner3.angle() < angle && angle <= corner4.angle())
-			return corner4.subtract(corner3).normalOut();
-		else 
-			return corner1.subtract(corner4).normalOut();
+		
+		//find index of the point with the largest angle
+		int index = 0;
+		double max = corner1.angle();
+		for(int i = 0; i < corners.size(); i++){
+			if(max < corners.get(i).angle()){
+				index = i;
+				max = corners.get(i).angle();
+			}
+		}
+		
+		//Rotate the array so that the largest point is first. Awesome method.
+		Collections.rotate(corners, -index);
+		
+		//this for loop covers the first three cases
+		for(int i = 0; i < corners.size() - 1; i++){
+			if(corners.get(i).angle() < angle && angle < corners.get(i+1).angle())
+				return corners.get(i+1).subtract(corners.get(i)).normalOut();
+		}
+		//the last case
+		return corners.get(corners.size()-1).subtract(corners.get(0)).normalOut();
 	}
 	
 	public void checkCollisionWithWall(int xwall, int ywall){
-		if(position.x + width/2 > xwall && velocity.x > 0 || position.x - width/2 < 0 && velocity.x < 0){
-			velocity.x = -velocity.x;
+		if(position.x + width/2 > xwall && velocity.x > 0 
+				|| position.x - width/2 < 0 && velocity.x < 0){
+			velocity.x = -velocity.x * restitution;
 		}
 			
 		if(position.y + height/2 > ywall && velocity.y > 0){
 			if(velocity.y < 5){
 				velocity.y = 0;
-				force = new Vector(0,0);
+				//force = new Vector(0,0);
 			}
-			velocity.y = -velocity.y;
+			velocity.y = -velocity.y * restitution;
 			position.y = ywall - height/2;
 		}
 		else if (position.y - height/2 < 0 && velocity.y < 0){
-			velocity.y = -velocity.y;
+			velocity.y = -velocity.y * restitution;
 		}
 	}
+	
+	/**
+	 * This method moves the object using integration of its force and velocity values
+	 * @param dt The small increment the object is actually moving in
+	 */
+	public void move (double dt) {
+		velocity.x = velocity.x + force.x * dt;
+		velocity.y = velocity.y + force.y * dt;
+		position.x = position.x + velocity.x * dt;
+		position.y = position.y + velocity.y * dt;
+		updatePoints();
+	}
+	
+	/**
+	 * 
+	 * @param p The point to be tested to see if it is in the box
+	 * @return True or false for whether or not the point is inside the box
+	 */
+	public boolean contains(Vector p){
+		Vector interior = p.subtract(corner1);
+		return false;
+	}
+	
+	public double getWidth(){
+		return width;
+	}
+	
+	public double getHeight(){
+		return height;
+	}
+	
+	public ArrayList<Vector> getPoints(){
+		return points;
+	}
+	
+	public ArrayList<Vector> getCorners(){
+		return corners;
+	}
+	
 }

@@ -30,4 +30,5 @@ public class Resolution {
 		A.velocity = A.velocity.subtract(impulse.scalar(A.inv_mass));
 		B.velocity = B.velocity.add(impulse.scalar(B.inv_mass));
 	}
+	
 }

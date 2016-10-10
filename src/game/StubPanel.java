@@ -25,7 +25,7 @@ public class StubPanel extends JPanel implements ActionListener{
 	public StubPanel(){
 		super();
 		engine = new Engine();
-		timer = new Timer ( (int) (1/dt), this);
+		timer = new Timer ( 35, this);
 		timer.start();
 	}
 	

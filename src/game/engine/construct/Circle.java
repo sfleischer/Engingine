@@ -1,6 +1,7 @@
 package game.engine.construct;
 
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.Color;
 import java.awt.geom.*;
 
@@ -20,6 +21,7 @@ public class Circle extends Body {
 	public Circle(double m, double x, double y, double vx, double vy, double r, Color c){
 		super(m, x, y, vx, vy, c);
 		radius = r;
+		restitution = .8;
 	}
 
 	@Override
@@ -44,7 +46,7 @@ public class Circle extends Body {
 		if(position.y + radius > ywall && velocity.y > 0){
 			if(velocity.y < 5){
 				velocity.y = 0;
-				force = new Vector(0,0);
+				//force = new Vector(0,0);
 			}
 			velocity.y = -velocity.y;
 			position.y = ywall - radius;
@@ -58,6 +60,12 @@ public class Circle extends Body {
 	
 	public double getRadius(){
 		return radius;
+	}
+	
+	@Override
+	public Rectangle getAABB(){
+		return new Rectangle((int) (position.x - radius), (int) (position.y - radius), 
+				(int) (radius*2), (int) (radius*2));
 	}
 
 }
