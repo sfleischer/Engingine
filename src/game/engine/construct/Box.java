@@ -59,12 +59,19 @@ public class Box extends Body{
 	public void updatePoints(){
 		points.clear();
 		corners.clear();
+		sides.clear();
 		
 		points.add(new Vector(position.x - width/2, position.y - height/2));
 		points.add(new Vector(position.x + width/2, position.y - height/2));
 		points.add(new Vector(position.x + width/2, position.y + height/2));
 		points.add(new Vector(position.x - width/2, position.y + height/2));
 		
+		sides.add(new Side(points.get(0), points.get(1), position, height/2));
+		sides.add(new Side(points.get(1), points.get(2), position, width/2));
+		sides.add(new Side(points.get(2), points.get(3), position, height/2));
+		sides.add(new Side(points.get(3), points.get(0), position, width/2));
+		
+		/*
 		corner1 = position.subtract(points.get(0));
 		corner2 = position.subtract(points.get(1));
 		corner3 = position.subtract(points.get(2));
@@ -74,6 +81,7 @@ public class Box extends Body{
 		corners.add(corner2);
 		corners.add(corner3);
 		corners.add(corner4);
+		*/
 	}
 	
 	/**
@@ -93,19 +101,11 @@ public class Box extends Body{
 	 * @return The vector that is normal to that surface
 	 */
 	public Vector normalToSurface (Vector direction){
-		Vector reverse = new Vector(-direction.x, -direction.y);
-		double angle = reverse.angle();
+		int i = 0;
+		for(; i < sides.size() && sides.get(i).isVectorPointingAtSide(direction); i++); 
+		return sides.get(i).getNormalVector();
 		
-		//find index of the point with the largest angle
-		int index = 0;
-		double max = corner1.angle();
-		for(int i = 0; i < corners.size(); i++){
-			if(max < corners.get(i).angle()){
-				index = i;
-				max = corners.get(i).angle();
-			}
-		}
-		
+		/*
 		//Rotate the array so that the largest point is first. Awesome method.
 		Collections.rotate(corners, -index);
 		
@@ -116,6 +116,13 @@ public class Box extends Body{
 		}
 		//the last case
 		return corners.get(corners.size()-1).subtract(corners.get(0)).normalOut();
+		*/
+	}
+	
+	public double getDistanceFromCenter(Vector direction){
+		int i = 0;
+		for(; i < sides.size() && sides.get(i).isVectorPointingAtSide(direction); i++); 
+		return sides.get(i).getHeight();
 	}
 	
 	public void checkCollisionWithWall(int xwall, int ywall){
@@ -171,8 +178,9 @@ public class Box extends Body{
 		return points;
 	}
 	
+	/*
 	public ArrayList<Vector> getCorners(){
 		return corners;
-	}
+	}*/
 	
 }

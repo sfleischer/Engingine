@@ -24,16 +24,17 @@ public class Hitbox {
 	
 	
 	private static boolean DetectCircleVBox (Circle A, Box B){
-		Rectangle aabb = A.getAABB();
+		/*Rectangle aabb = A.getAABB();
 		for(Vector p : B.getPoints()){
 			if(aabb.contains(p.x, p.y))
 				return true;
-		}
+		}*/
 		
 		Vector AtoB = B.position.subtract(A.position);
 		Vector n = B.normalToSurface(AtoB);
-	
-		return false;
+		double dist = AtoB.projectOnto(n).magnitude();
+		double min_dist = A.getRadius() + B.getDistanceFromCenter(AtoB);
+		return dist < min_dist;
 	}
 	
 	private static void correctPenetrationDepth(Manifold m){

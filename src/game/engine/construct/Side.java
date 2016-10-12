@@ -25,7 +25,7 @@ public class Side {
 		height = h;
 	}
 	
-	public Side(Vector p1, Vector p2, Vector c, int h){
+	public Side(Vector p1, Vector p2, Vector c, double h){
 		center = c;
 		
 		Vector corner1 = p1.subtract(center);
@@ -33,6 +33,7 @@ public class Side {
 		double angle1 = corner1.angle() + Math.PI;
 		double angle2 = corner2.angle() + Math.PI;
 		
+		//adjust the ordering of point1 and point2
 		if(angle2 < angle1 && angle1 - angle2 < Math.PI || angle1 < angle2 && angle2- angle1 > Math.PI){
 			point1 = p1;
 			point2 = p2;
