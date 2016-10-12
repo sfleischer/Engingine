@@ -17,6 +17,7 @@ public class Box extends Body{
 	private double height;
 	private ArrayList<Vector> corners; //stores the corners (vector relative to the center)
 	private ArrayList<Vector> points;  //stores the points (vector relative to the origin)
+	private ArrayList<Side>   sides;   //stores the sides of the box
 	
 	/*
 	 * Corners of the box are arranged like the following
@@ -50,6 +51,7 @@ public class Box extends Body{
 		
 		points  = new ArrayList<Vector>();
 		corners = new ArrayList<Vector>();
+		sides   = new ArrayList<Side>();
 		
 		updatePoints();
 	}

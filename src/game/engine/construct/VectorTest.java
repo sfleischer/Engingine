@@ -96,5 +96,32 @@ public class VectorTest {
 		assertEquals(a.y, 19, EPSILON);
 	}
 	
+	@Test
+	public void simpleProjectionTest() {
+		Vector v = new Vector(5,5);
+		Vector u = new Vector(1, 0);
+		Vector a = v.projectOnto(u);
+		assertEquals(a.x, 5, EPSILON);
+		assertEquals(a.y, 0, EPSILON);
+	}
+	
+	@Test
+	public void zeroProjectionTest() {
+		Vector v = new Vector(0, 1);
+		Vector u = new Vector(1, 0);
+		Vector a = v.projectOnto(u);
+		assertEquals(a.x, 0, EPSILON);
+		assertEquals(a.y, 0, EPSILON);
+	}
+	
+	@Test
+	public void projectionTest() {
+		Vector v = new Vector(5, 4);
+		Vector u = new Vector(-2, 2);
+		Vector a = v.projectOnto(u);
+		assertEquals(a.x, 0.5, EPSILON);
+		assertEquals(a.y, -0.5, EPSILON);
+	}
+	
 
 }

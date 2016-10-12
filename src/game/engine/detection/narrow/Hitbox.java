@@ -29,6 +29,10 @@ public class Hitbox {
 			if(aabb.contains(p.x, p.y))
 				return true;
 		}
+		
+		Vector AtoB = B.position.subtract(A.position);
+		Vector n = B.normalToSurface(AtoB);
+	
 		return false;
 	}
 	

@@ -115,6 +115,22 @@ public class Vector {
 	
 	/**
 	 * 
+	 * @param n The vector to be projected onto
+	 * @return The vector that results from the projection of itself to n
+	 */
+	public Vector projectOnto(Vector n){
+		Vector u = n.unit();
+		double mag = this.dot(u);
+		return u.scalar(mag);
+	}
+	
+	@Override
+	public String toString(){
+		return "x: " + x + " y: " + y;
+	}
+	
+	/**
+	 * 
 	 * @param v The vector one wishes to compare with
 	 * @return True if the vectors are equal in magnitude and direction and false otherwise
 	 */
